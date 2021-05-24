@@ -116,11 +116,22 @@ Toolkit.run(
       // Filter out any boring activity
       .filter((event) => serializers.hasOwnProperty(event.type))
       // Filter out multiple actions on the same repo
-      .filter((event) => !!events.data.some(e => e.type !== event.type || toUrlFormat(e) !== toUrlFormat(event)))
+      .filter((event) => {
+        tools.log.debug(`Parsing event: ${event.type} - ${toUrlFormat(event)}`)
+        const eventFormat = toUrlFormat(event);
+        events.data.some(e => {
+          tools.log.debug(`matches? ${e.type !== event.type || toUrlFormat(e) !== eventFormat}`)
+        })
+        return !!events.data.some(e => e.type !== event.type || toUrlFormat(e) !== eventFormat)
+      })
       // We only have five lines to work with
       .slice(0, MAX_LINES)
       // Call the serializer to construct a string
       .map((item) => serializers[item.type](item));
+
+      tools.log.debug(
+        content
+      );
 
     const readmeContent = fs.readFileSync("./README.md", "utf-8").split("\n");
 
