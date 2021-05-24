@@ -1572,10 +1572,6 @@ const toUrlFormat = (item) => {
   return `[${item}](${urlPrefix}/${item})`;
 };
 
-const existing = [];
-const filterSimilarEvents = (item) => {
-  
-};
 
 /**
  * Execute shell command
@@ -1659,9 +1655,6 @@ Toolkit.run(
       .filter((event) => serializers.hasOwnProperty(event.type))
       // Filter out multiple actions on the same repo
       .filter((event) => {
-        if (!FILTER_SIMILAR) {
-          return true;
-        }
         const key = `${event.type} - ${toUrlFormat(event)}`;
         if (existing.includes(key)) {
           return false;
