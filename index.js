@@ -115,6 +115,8 @@ Toolkit.run(
     const content = events.data
       // Filter out any boring activity
       .filter((event) => serializers.hasOwnProperty(event.type))
+      // Filter out multiple actions on the same repo
+      .filter((event) => !!events.data.some(e => e.type !== event.type || toUrlFormat(e) !== toUrlFormat(event)))
       // We only have five lines to work with
       .slice(0, MAX_LINES)
       // Call the serializer to construct a string
