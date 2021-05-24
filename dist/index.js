@@ -1645,6 +1645,22 @@ Toolkit.run(
       username: GH_USERNAME,
       per_page: 100,
     });
+    events = [
+      ...events,
+      ...(await tools.github.activity.listPublicEventsForUser({
+        username: GH_USERNAME,
+        per_page: 100,
+        page: 2,
+      })),
+    ];
+    events = [
+      ...events,
+      ...(await tools.github.activity.listPublicEventsForUser({
+        username: GH_USERNAME,
+        per_page: 100,
+        page: 3,
+      })),
+    ];
     tools.log.debug(
       `Activity for ${GH_USERNAME}, ${events.data.length} events found.`
     );
@@ -1667,6 +1683,7 @@ Toolkit.run(
       .map((item) => serializers[item.type](item));
 
     tools.log.debug(`Boiled down to ${content.length} items`);
+    tools.log.debug(content);
 
     const readmeContent = fs.readFileSync("./README.md", "utf-8").split("\n");
 
