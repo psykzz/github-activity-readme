@@ -1544,7 +1544,7 @@ const { Toolkit } = __webpack_require__(461);
 const GH_USERNAME = core.getInput("GH_USERNAME");
 const COMMIT_MSG = core.getInput("COMMIT_MSG");
 const MAX_LINES = core.getInput("MAX_LINES");
-const FILTER_SIMILAR = core.getInput("FILTER_SIMILAR") === true;
+const FILTER_SIMILAR = core.getInput("FILTER_SIMILAR") === "true";
 
 /**
  * Returns the sentence case representation
