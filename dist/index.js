@@ -1572,7 +1572,6 @@ const toUrlFormat = (item) => {
   return `[${item}](${urlPrefix}/${item})`;
 };
 
-
 /**
  * Execute shell command
  * @param {String} cmd - root command
@@ -1660,11 +1659,14 @@ Toolkit.run(
           return false;
         }
         existing.push(key);
-        return true;})
+        return true;
+      })
       // We only have five lines to work with
       .slice(0, MAX_LINES)
       // Call the serializer to construct a string
       .map((item) => serializers[item.type](item));
+
+    tools.log.debug(`Boiled down to ${content.length} items`);
 
     const readmeContent = fs.readFileSync("./README.md", "utf-8").split("\n");
 
@@ -1760,7 +1762,6 @@ Toolkit.run(
 
     // Update README
     fs.writeFileSync("./README.md", readmeContent.join("\n"));
-
 
     tools.log.debug(readmeContent);
     // Commit to the remote repository
