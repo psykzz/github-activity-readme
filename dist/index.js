@@ -1659,7 +1659,7 @@ Toolkit.run(
         events.data.some(e => {
           tools.log.debug(`matches? ${e.type !== event.type || toUrlFormat(e) !== eventFormat}`)
         })
-        return !!events.data.some(e => e.type !== event.type || toUrlFormat(e) !== eventFormat)
+        return !events.data.some(e => e.type !== event.type || toUrlFormat(e) !== eventFormat)
       })
       // We only have five lines to work with
       .slice(0, MAX_LINES)
