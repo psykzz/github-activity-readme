@@ -1667,7 +1667,7 @@ Toolkit.run(
       // Filter out any boring activity
       .filter((event) => serializers.hasOwnProperty(event.type))
       // Filter out multiple actions on the same repo
-      .filter(filterSimilarEvents)
+      .filter((event) => filterSimilarEvents(event))
       // We only have five lines to work with
       .slice(0, MAX_LINES)
       // Call the serializer to construct a string
@@ -1772,7 +1772,7 @@ Toolkit.run(
     try {
       await commitFile();
     } catch (err) {
-      tools.log.debug("Something went wrong");
+      tools.log.debug("Something went wrong while commiting the file");
       return tools.exit.failure(err);
     }
     tools.exit.success("Pushed to remote repository");
