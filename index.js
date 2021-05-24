@@ -1,6 +1,5 @@
 const core = require("@actions/core");
 const fs = require("fs");
-const path = require("path");
 const { spawn } = require("child_process");
 const { Toolkit } = require("actions-toolkit");
 
@@ -8,6 +7,8 @@ const { Toolkit } = require("actions-toolkit");
 const GH_USERNAME = core.getInput("GH_USERNAME");
 const COMMIT_MSG = core.getInput("COMMIT_MSG");
 const MAX_LINES = core.getInput("MAX_LINES");
+const FILTER_SIMILAR = core.getInput("FILTER_SIMILAR") === true;
+
 /**
  * Returns the sentence case representation
  * @param {String} str - the string
@@ -33,6 +34,19 @@ const toUrlFormat = (item) => {
       : `[#${item.payload.pull_request.number}](${urlPrefix}/${item.repo.name}/pull/${item.payload.pull_request.number})`;
   }
   return `[${item}](${urlPrefix}/${item})`;
+};
+
+const existing = [];
+const filterSimilarEvents = (item) => {
+  if (!FILTER_SIMILAR) {
+    return true;
+  }
+  const key = `${item.type} - ${toUrlFormat(item)}`;
+  if (existing.includes(key)) {
+    return false;
+  }
+  existing.push(key);
+  return true;
 };
 
 /**
@@ -112,26 +126,15 @@ Toolkit.run(
       `Activity for ${GH_USERNAME}, ${events.data.length} events found.`
     );
 
-    const existing = [];
-
     const content = events.data
       // Filter out any boring activity
       .filter((event) => serializers.hasOwnProperty(event.type))
       // Filter out multiple actions on the same repo
-      .filter((event) => {
-        const key = `${event.type} - ${toUrlFormat(event)}`;
-        if (existing.includes(key)) {
-          return false;
-        }
-        existing.push(key);
-        return true;
-      })
+      .filter(filterSimilarEvents)
       // We only have five lines to work with
       .slice(0, MAX_LINES)
       // Call the serializer to construct a string
       .map((item) => serializers[item.type](item));
-
-    tools.log.debug(content);
 
     const readmeContent = fs.readFileSync("./README.md", "utf-8").split("\n");
 
