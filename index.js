@@ -107,28 +107,32 @@ Toolkit.run(
     const events = await tools.github.activity.listPublicEventsForUser({
       username: GH_USERNAME,
       per_page: 100,
-    });
+    }).data;
     events = [
       ...events,
-      ...(await tools.github.activity.listPublicEventsForUser({
-        username: GH_USERNAME,
-        per_page: 100,
-        page: 2,
-      })),
+      ...(
+        await tools.github.activity.listPublicEventsForUser({
+          username: GH_USERNAME,
+          per_page: 100,
+          page: 2,
+        })
+      ).data,
     ];
     events = [
       ...events,
-      ...(await tools.github.activity.listPublicEventsForUser({
-        username: GH_USERNAME,
-        per_page: 100,
-        page: 3,
-      })),
+      ...(
+        await tools.github.activity.listPublicEventsForUser({
+          username: GH_USERNAME,
+          per_page: 100,
+          page: 3,
+        })
+      ).data,
     ];
     tools.log.debug(
       `Activity for ${GH_USERNAME}, ${events.data.length} events found.`
     );
     const existing = [];
-    const content = events.data
+    const content = events
       // Filter out any boring activity
       .filter((event) => serializers.hasOwnProperty(event.type))
       // Filter out multiple actions on the same repo
